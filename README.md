@@ -5,6 +5,7 @@ Scritps para facilitar o uso do O.S. Slackware.**
 
 
 
+
 **Links úteis:**
 
 http://www.slackware.com/
