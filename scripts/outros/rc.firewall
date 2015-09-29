@@ -1,0 +1,347 @@
+#/bin/sh
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+# 
+# -------------------------------------------------------------------
+# IPTABLES - Configuracao personalizada || INICIO
+# -------------------------------------------------------------------
+# Configuracoes das variáveis
+# -------------------------------------------------------
+IF_EXTERNA=wlan0
+echo "Interface Externa `echo $IF_EXTERNA`"
+IF_INTERNA=eth0
+echo "Interface Interna `echo $IF_INTERNA`"
+IP_SERVER=10.0.0.1
+echo "Ip local `echo $IP_SERVER`"
+VER_IP_EXTERNO=`curl ifconfig.me`
+IP_EXTERNO=`echo $VER_IP_EXTERNO`  # Esse é meu ip estático de internet
+echo $IP_EXTERNO
+echo " "
+echo " "
+echo " "
+echo -e " \033[0;31m###################################################################"
+echo -e " \033[0;31m#Adicionando módulos no kernel                                     "
+echo -e " \033[0;31m#Os modulos a seguir, de forma geral, compartilham a internet,     "
+echo -e " \033[0;31m#resolvem problemas de ftp e sao responsaveis pelos logs.          "
+echo -e " \033[0;31m###################################################################"
+##################################################################
+IP_TABLES=`lsmod | grep ip_tables`
+if echo "$IP_TABLES" | egrep 'ip_tables' > /dev/null
+then
+echo -e "\033[0;36m ip_tables                         \033[1;32m[OK]  \033[0m"
+else
+modprobe ip_tables
+fi
+IP_TABLES=`lsmod | grep ip_tables`
+if echo "$IP_TABLES" | egrep 'ip_tables' > /dev/null
+then
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m" > /dev/null
+else
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m"
+fi
+###################################################################
+IPTABLE_NAT=`lsmod | grep iptable_nat`
+if echo "$IPTABLE_NAT" | egrep 'iptable_nat' > /dev/null
+then
+echo -e "\033[0;36m iptable_nat                       \033[1;32m[OK]  \033[0m"
+else
+modprobe iptable_nat
+fi
+IP_TABLES=`lsmod | grep iptable_nat`
+if echo "$IPTABLE_NAT" | egrep 'iptable_nat' > /dev/null
+then
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m" > /dev/null
+else
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m"
+fi
+####################################################################
+NF_CONNTRACK=`lsmod | grep nf_conntrack_ipv4`
+if echo "$NF_CONNTRACK" | egrep 'nf_conntrack_ipv4' > /dev/null
+then
+echo -e "\033[0;36m nf_conntrack_ipv4                 \033[1;32m[OK]  \033[0m"
+else
+modprobe nf_conntrack_ipv4
+fi
+NF_CONNTRACK=`lsmod | grep nf_conntrack_ipv4`
+if echo "$NF_CONNTRACK" | egrep 'nf_conntrack_ipv4' > /dev/null
+then
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m" > /dev/null
+else
+cho -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m"
+fi
+###################################################################
+NF_NAT_FTP=`lsmod | grep nf_nat_ftp`
+echo > testes
+echo $NF_NAT_FTP > testes
+if [ -f  testes ]; then
+echo -e "\033[0;36m nf_nat_ftp                        \033[1;32m[OK]  \033[0m"
+else
+modprobe nf_nat_ftp
+NF_NAT_FTP=`lsmod | grep nf_nat_ftp`
+echo $NF_NAT_FTP > testes
+fi
+if [ -z testes ]; then
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m"
+fi
+###################################################################
+IPT_LOG=`lsmod | grep ipt_LOG`
+if echo "$IPT_LOG" | egrep 'ipt_LOG' > /dev/null
+then
+echo -e "\033[0;36m ipt_log                           \033[1;32m[OK]  \033[0m"
+else
+modprobe ipt_LOG
+fi
+IPT_LOG=`lsmod | grep ipt_LOG`
+if echo "$IPT_LOG" | egrep 'ipt_LOG' > /dev/null
+then
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m" > /dev/null
+else
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m"
+fi
+###################################################################
+IPT_REJECT=`lsmod | grep ipt_REJECT`
+if echo "$IPT_REJECT" | egrep 'ipt_REJECT' > /dev/null
+then
+echo -e "\033[0;36m ipt_reject                        \033[1;32m[OK]  \033[0m"
+else
+modprobe ipt_REJECT
+fi
+IPT_REJECT=`lsmod | grep ipt_REJECT`
+if echo "$IPT_REJECT" | egrep 'ipt_REJECT' > /dev/null
+then
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m" > /dev/null
+else
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m"
+fi
+###################################################################
+IPT_MASQUERADE=`lsmod | grep ipt_MASQUERADE`
+if echo "$IPT_MASQUERADE" | egrep 'ipt_MASQUERADE' > /dev/null
+then
+echo -e "\033[0;36m ipt_masquerade                    \033[1;32m[OK]  \033[0m"
+else
+modprobe ipt_MASQUERADE
+fi
+IPT_MASQUERADE=`lsmod | grep ipt_MASQUERADE`
+if echo "$IPT_MASQUERADE" | egrep 'ipt_MASQUERADE' > /dev/null
+then
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m" > /dev/null
+else
+echo -e "\033[0;36m Modulo nao encontrado    \033[1;31m[STOP]  \033[0m" 
+fi
+################################################################### 
+# Flush - Limpar regras
+# -------------------------------------------------------------------
+echo "Zerando regras default"
+iptables -F
+iptables -F -t nat
+iptables -F -t mangle
+echo "Zerando regras personalizadas"
+iptables -X
+iptables -X -t nat
+iptables -X -t mangle
+# -------------------------------------------------------------------
+echo "Compartilhando da internet"
+Ip_Forward=`cat /proc/sys/net/ipv4/ip_forward`
+if [ $Ip_Forward = "1" ]; then
+echo -e " \033[0;31mip_forward \033[0;32m [OK]"
+else
+echo "ip_forward desativado!. Ativando....."
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo -e "ip_forward ativado. \033[0;32m [OK]"
+fi
+#
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+#
+echo "Politica padrão Drop"
+# -------------------------------------------------------
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP 
+#
+# Tabela filter
+#iptables -t filter -P INPUT DROP
+#iptables -t filter -P OUTPUT ACCEPT
+#iptables -t filter -P FORWARD DROP
+# Tabela nat
+#iptables -t nat -P PREROUTING ACCEPT
+#iptables -t nat -P OUTPUT ACCEPT
+#iptables -t nat -P POSTROUTING DROP
+# Tabela mangle
+#iptables -t mangle -P PREROUTING ACCEPT
+#iptables -t mangle -P OUTPUT ACCEPT
+#
+# Accept - Regras de liberaçao
+# -------------------------------------------------------
+#
+echo "Interface de loopback"
+iptables -A INPUT -p tcp --syn -s 127.0.0.1/255.0.0.0 -j ACCEPT
+iptables -A INPUT -i lo -j ACCEPT
+#
+# Abre para uma faixa de endereços da rede local
+iptables -A INPUT -p tcp --syn -s $IP_SERVER/24 -j ACCEPT
+#
+# Libera os pacotes de retorno da internet
+iptables -A INPUT -i ! $IF_EXTERNA -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED,NEW -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED,NEW -j ACCEPT
+#
+# Libera o acesso ao ftp
+iptables -A INPUT -p tcp --dport 20 -j ACCEPT
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+#
+#
+echo "Redirecionando -------------------------------------------------------------------"
+echo "SQUID (para  proxy transparente)"
+iptables -t nat -A PREROUTING -i $IF_EXTERNA -p tcp --dport 80 -j REDIRECT --to-port 3128
+iptables -t nat -A PREROUTING -s 0/0 -p tcp --dport 80 -j REDIRECT --to-port 3128 # testar
+iptables -t nat -A PREROUTING -s 0/0 -p udp --dport 80 -j REDIRECT --to-port 3128
+iptables -t nat -A POSTROUTING -s 0/0 -o $IF_INTERNA -j MASQUERADE # testar
+#
+# VPN
+#iptables -A INPUT -p tcp -i $IF_EXTERNA --dport 1723 -j ACCEPT
+#iptables -A INPUT -p 47 -i $IF_EXTERNA -j ACCEPT
+#iptables -t nat -A PREROUTING -p tcp -i $IF_EXTERNA --dport 1723 -j DNAT --to $IP_SERVER:1723
+#iptables -t nat -A PREROUTING -p 47 -i $IF_EXTERNA -j DNAT --to $IP_SERVER
+#
+# Remote Desktop Connection - Server
+# Redirecionamento direto ao nosso servidor, no caso de uma chamada de RDC.
+#iptables -t nat -A PREROUTING -p tcp -i $IF_EXTERNA -d $IP_EXTERNO --dport 3389 -j DNAT --to-destination $IP_SERVER:3389
+#
+#
+echo "Filtros Proteção contra alguns worms"
+iptables -A FORWARD -p tcp --dport 135 -i $IF_INTERNA -j REJECT
+#
+echo "Forçar checagem de pacotes fragmentados"
+iptables -A INPUT -f -j DROP
+#
+echo "Dropar pacotes nulos e malformados"
+iptables -A INPUT -i $IF_EXTERNA -m unclean -j LOG --log-level 6 --log-prefix "FIREWALL: pacote mal formado: "
+iptables -A INPUT -i $IF_EXTERNA -m unclean -j DROP
+iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+#
+echo "Syn packets check (dropar o que nao for um pacote SYN)"
+iptables -A INPUT -p tcp ! --syn -m state --state NEW -j LOG --log-level 6 --log-prefix "FIREWALL: Non SYN packet: "
+iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+#
+echo "Proteção contra syn-flood"
+iptables -A FORWARD -p tcp --syn -m limit --limit 2/s -j LOG --log-level 6 --log-prefix "FIREWALL: SYN flood: "
+iptables -A FORWARD -p tcp --syn -m limit --limit 2/s -j ACCEPT
+#
+echo "Protecao contra trace-routes"
+iptables -A FORWARD -p udp -s 0/0 -i eth0 --dport 33435:33525 -j LOG --log-level 6 --log-prefix "FIREWALL: Trace Route: "
+iptables -A FORWARD -p udp -s 0/0 -i eth0 --dport 33435:33525 -j DROP
+#
+#
+echo "Proteção contra trojans"
+iptables -N TROJAN
+iptables -A TROJAN -m limit --limit 15/m -j LOG --log-level 6 --log-prefix "FIREWALL: Trojan: "
+iptables -A TROJAN -j DROP
+iptables -A INPUT -p TCP -i $IF_EXTERNA --dport 666 -j TROJAN
+iptables -A INPUT -p TCP -i $IF_EXTERNA --dport 666 -j TROJAN
+iptables -A INPUT -p TCP -i $IF_EXTERNA --dport 6666 -j TROJAN
+iptables -A INPUT -p TCP -i $IF_EXTERNA --dport 6006 -j TROJAN
+iptables -A INPUT -p TCP -i $IF_EXTERNA --dport 16660 -j TROJAN
+#
+# Proteção contra trinoo
+# -------------------------------------------------------
+iptables -N TRINOO
+iptables -A TRINOO -m limit --limit 15/m -j LOG --log-level 6 --log-prefix "FIREWALL: trinoo: "
+iptables -A TRINOO -j DROP
+iptables -A INPUT -p TCP -i $IF_EXTERNA --dport 27444 -j TRINOO
+iptables -A INPUT -p TCP -i $IF_EXTERNA --dport 27665 -j TRINOO
+iptables -A INPUT -p TCP -i $IF_EXTERNA --dport 31335 -j TRINOO
+iptables -A INPUT -p TCP -i $IF_EXTERNA --dport 34555 -j TRINOO
+iptables -A INPUT -p TCP -i $IF_EXTERNA --dport 35555 -j TRINOO
+#
+echo "Proteção contra port scanners"
+iptables -N SCANNER
+iptables -A SCANNER -m limit --limit 15/m -j LOG --log-level 6 --log-prefix "FIREWALL: Port scanner: "
+iptables -A SCANNER -j DROP
+iptables -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -i $IF_EXTERNA -j SCANNER
+iptables -A INPUT -p tcp --tcp-flags ALL NONE -i $IF_EXTERNA -j SCANNER
+iptables -A INPUT -p tcp --tcp-flags ALL ALL -i $IF_EXTERNA -j SCANNER
+iptables -A INPUT -p tcp --tcp-flags ALL FIN,SYN -i $IF_EXTERNA -j SCANNER
+iptables -A INPUT -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -i $IF_EXTERNA -j SCANNER
+iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -i $IF_EXTERNA -j SCANNER
+iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -i $IF_EXTERNA -j SCANNER 
+#
+echo "Proteção contra ping da morte"
+iptables -A FORWARD -p icmp --icmp-type echo-request -m limit --limit 1/s -j ACCEPT
+#
+echo "Recusa de pings"
+iptables -A FORWARD -p icmp --icmp-type echo-request -j DROP
+#
+# Programas e portas  P2P
+# -------------------------------------------------------
+#
+# Audiogalaxy
+#iptables -A FORWARD -d 64.245.58.0/23 -j DROP
+#
+# BearShare
+#iptables -A FORWARD -p TCP --dport 6346 -j DROP
+#
+# iMesh
+#iptables -A FORWARD -d 216.35.208.0/24 -j DROP
+#
+# KaZaa
+#iptables -A FORWARD -d 213.248.112.0/24 -j DROP
+#iptables -A FORWARD -p TCP --dport 1214 -j DROP 
+#
+# Limewire
+#iptables -A FORWARD -p TCP --dport 6346 -j DROP
+#
+# Morpheus
+#iptables -A FORWARD -d 206.142.53.0/24 -j DROP
+#iptables -A FORWARD -p TCP --dport 1214 -j DROP
+#
+# Napigator
+#iptables -A FORWARD -d 209.25.178.0/24 -j DROP
+#
+# Napster
+#iptables -A OUTPUT -p TCP --dport 6699 -j DROP
+#iptables -A FORWARD -p TCP --dport 6699 -j DROP
+#iptables -A OUTPUT -p UDP --dport 6699 -j DROP
+#iptables -A FORWARD -p UDP --dport 6699 -j DROP
+#
+# ToadNode
+#iptables -A FORWARD -p TCP --dport 6346 -j DROP
+#
+# WinMX
+#iptables -A FORWARD -d 209.61.186.0/24 -j DROP
+#iptables -A FORWARD -d 64.49.201.0/24-j DROP
+#
+echo "Ativando mascaramento de saída
+-------------------------------------------------------"
+iptables -A POSTROUTING -t nat -o $IF_EXTERNA -j MASQUERADE
+iptables -t nat -A POSTROUTING -o $IF_EXTERNA -j MASQUERADE
+#
+echo "Logs - tentativas de acesso a determinadas portas
+-------------------------------------------------------"
+iptables -A INPUT -p tcp --dport 21 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: ftp: "
+iptables -A INPUT -p tcp --dport 23 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: telnet: "
+iptables -A INPUT -p tcp --dport 25 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: smtp: "
+iptables -A INPUT -p tcp --dport 80 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: http: "
+iptables -A INPUT -p tcp --dport 110 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: pop3: "
+iptables -A INPUT -p udp --dport 111 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: rpc: "
+iptables -A INPUT -p tcp --dport 113 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: identd: "
+iptables -A INPUT -p tcp --dport 137:139 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: samba: "
+iptables -A INPUT -p udp --dport 137:139 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: samba: "
+iptables -A INPUT -p tcp --dport 161:162 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: snmp: "
+iptables -A INPUT -p tcp --dport 6667:6668 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: irc: "
+iptables -A INPUT -p tcp --dport 3128 -i $IF_EXTERNA -j LOG --log-level 6 --log-prefix "FIREWALL: squid: "
+#
+echo "Logs - outras recusas"
+iptables -A INPUT -m limit --limit 5/min -j LOG --log-prefix "FIREWALL: iptables denied: " --log-level 7
+#
+echo "# -------------------------------------------------------------------"
+echo "# IPTABLES - Configuracao personalizada || OK!!!"
+echo "# -------------------------------------------------------------------"
+#

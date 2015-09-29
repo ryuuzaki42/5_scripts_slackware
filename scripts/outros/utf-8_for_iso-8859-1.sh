@@ -1,0 +1,47 @@
+#! /bin/bash
+if [ $# -ne 1 ] # verifica se foi passado o nome do arquivo
+then
+   echo "$(basename "$0"): Error of the operands"
+   echo "usage $0 name.extension about the file if you "   
+   echo "Try $0 --help"
+   exit 0
+fi
+
+nomeDoArquivo="$1" #Nome do arquivo $1
+
+ajuda () {
+  echo "#                                                        #"
+  echo "# use the file name (with extension) you want to convert #"  
+  echo "# i.e.: $0 file.srt                  #"
+  echo "#                                                        #" 
+  exit 0
+}
+
+case "$1" in
+'--help')
+  ajuda  
+esac
+
+tamString=$(echo "$nomeDoArquivo" | wc -m | sed 's/ '"$nomeDoArquivo"'//g') #Calcula o tamanho da string
+tamString2=$((tamString - 5)) #Calcula o tamanho da string sem a extensao
+#extensao=$(echo "$nomeDoArquivo" | rev | cut -c1-3) # extensao do arquivo
+nome2=$(echo "$nomeDoArquivo" | cut -c1-$tamString2) #nome do arquivo sem extensao
+tamString2=$((tamString2 +2)) #Calcula o tamanho da string sem a extensao
+extensao=$(echo "$nomeDoArquivo" | cut -c$tamString2-) # extensao do arquivo
+
+##Para teste
+#echo $nomeDoArquivo
+#echo $extensao
+#echo $nome2
+#echo $tamString
+#echo $tamString2
+
+#converter de utf-8 para iso-8859-1
+iconv -f utf-8 -t iso-8859-1 "$nomeDoArquivo" > "$nome2"2".$extensao"
+if [ $? == 1 ]
+then
+  echo -e "Erro encontrado na execução do iconv \nTente $0 --help"
+else
+  echo -e "Convertido com sucesso \"$nomeDoArquivo\" de iso-8859-1 para utf-8"
+  echo "$nomeDoArquivo --> "$nome2"2".$extensao""
+fi

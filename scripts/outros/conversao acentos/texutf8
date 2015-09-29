@@ -1,0 +1,91 @@
+#!/bin/sed -f
+# Informações da latin2tex que foi baseado
+###########################################################################
+# latin2tex - script sed que converte acentos latin para comandos TeX
+# Copyright (C) 2002 Rafael Ávila
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# -----------------------------------------------
+# latin2tex v1.0
+# uso: tex2latin < in.latin > out.tex
+# baseado no script `tex2latin' de Elgio Schlemer
+#
+# a versão mais recente de ambos pode ser encontrada em
+# http://www.inf.ufrgs.br/utug/download
+###########################################################################
+# Alterada 28-29/06/2013, por João Batista Ribeiro 
+# texuft8 - script sed que converte acentos Tex para utf-8
+# Modo de utilizacao
+# cat aquivoentrada.tex | ./texuft8 > aquivosaida.tex
+#
+# Nao faca
+#  cat aquivoentrada.tex | ./texuft8 > aquivoentrada.tex
+#  ira perder o arquivo.
+
+# Vogais, acento agudo
+s/\\'{a}/á/g
+s/\\'{e}/é/g
+s/\\'{\\i}/í/g
+s/\\'{o}/ó/g
+s/\\'{u}/ú/g
+
+
+s/\\'{A}/Á/g
+s/\\'{E}/É/g
+s/\\'{I}/Í/g
+s/\\'{O}/Ó/g
+s/\\'{U}/Ú/g
+
+# Vogais, acento crase
+s/\\`{a}/à/g
+s/\\`{e}/è/g
+s/\\`{\\i}/ì/g
+s/\\`{o}/ó/g
+s/\\`{u}/ù/g
+
+s/\\`{A}/À/g
+s/\\`{E}/È/g
+s/\\`{I}/Ì/g
+s/\\`{O}/Ò/g
+s/\\`{U}/Ù/g
+
+# Vogais, til
+s/\\~{a}/ã/g
+s/\\~{o}/õ/g
+s/\\~{n}/ñ/g
+
+s/\\~{A}/Ã/g
+s/\\~{O}/Õ/g
+s/\\~{N}/Ñ/g
+
+# Cedilha
+s/\\c{c}/ç/g
+s/\\c{c}/ç/g
+s/\\c{C}/Ç/g
+s/\\c{C}/Ç/g
+
+# Vogais, acento cincunflexo
+s/\\^{a}/â/g
+s/\\^{e}/ê/g
+s/\\^{i}/î/g
+s/\\^{o}/ô/g
+s/\\^{u}/û/g
+
+s/\\^{A}/Â/g
+s/\\^{E}/Ê/g
+s/\\^{I}/Î/g
+s/\\^{O}/Ô/g
+s/\\^{U}/Û/g
